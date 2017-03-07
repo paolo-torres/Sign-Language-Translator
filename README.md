@@ -1,1 +1,1 @@
-# cuhacking
+# Sign-Language-Translator
