@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta content="sign, language, asl, video, chat" name="keywords">
+		<meta content="Homepage for SignBuddy" name="description">
+		<meta content="SignBuddy" name="title">
+		<meta content="Andrew Nguyen, Paolo Torres, Jerry Xie, Matt Romlewski" name="author">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<title>SignBuddy: Home</title>
+		<style>
+		body {
+			background-color: #000080;
+			background-image: url("http://www.homesforharingey.org/sites/default/files/hands-565603_1920.png");
+			background-size: cover;
+			font-family: 'Roboto', sans-serif;
+		}
+
+		h1 {
+			text-align: center;
+			padding: 20px 0px 40px 0px;
+		}
+
+		#container {
+			margin-top: 20px;
+			width: 500px;
+			height: 375px;
+			
+		}
+		#videoElement {
+			width: 500px;
+			height: 375px;
+			background-color: #666;
+			border: 10px #333 solid;
+		}
+
+		#phoneCam {
+			margin-top: 20px;
+			margin-left: 50px;
+			width: 752px;
+			height: 436px;
+			
+		}
+
+		#phoneElement {
+			width: 752px;
+			height: 436px;
+			background-color: #666;
+			border: 15px #333 solid;
+		}
+
+		#wordContainer {
+			background-color: white;
+			border-radius: 10px;
+			margin: 40px -30px 0px 0px;
+			padding-left: 15px;
+			opacity: 0.8;
+		}
+
+		#sign-words {
+			font-size: 45px;
+			margin: 0px auto;
+			text-align: center;
+			opacity: 1;
+		}
+
+		#logo {
+			margin-bottom: 10px;
+		}
+		</style>
+	</head>
+
+	<body>
+		<div id="logo">
+			<div class="col-md-4"></div>
+			<div class="col-md-4">
+				<img src=http://i.imgur.com/9Z0Sjit.png/>
+			</div>
+			<div class="col-md-4"></div>
+		</div>
+		<div id="phoneCam" class="col-md-6">
+			<iframe src="http://172.17.107.172:8080/browserfs.html" id="phoneElement" scrolling="yes"></iframe>
+		</div>
+		<div class="col-md-1"></div>
+		<div id="container" class="col-md-5">
+			<video autoplay="true" id="videoElement"></video>
+			<div id="wordContainer">
+				<p id='sign-words'>No words yet...</p>
+			</div>
+		</div>
+		<script>
+		var video = document.querySelector("#videoElement"); 
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mediaDevices.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+		if (navigator.getUserMedia)
+			navigator.getUserMedia({video: true}, handleVideo, videoError);
+		function handleVideo(stream) {
+			video.src = window.URL.createObjectURL(stream);
+		}
+		var wordSign = document.getElementById('sign-words');
+		function mainFunc (index) {
+			if(index == 200) { return; }
+			setTimeout(function() {
+				readText('../wordLog');
+				mainFunc(index++);
+			},700);
+		}
+		function readText(file) {
+			var rawFile = new XMLHttpRequest();
+			rawFile.open("GET", file, false);
+			rawFile.onreadystatechange = function () {
+				if(rawFile.readyState === 4) {
+					if(rawFile.status === 200 || rawFile.status == 0) {
+						var readWord = rawFile.responseText;
+						readWord = readWord.toUpperCase();
+						wordSign.innerHTML = readWord;
+						console.log('Writing this word: ' + readWord);
+					}
+				}
+			}
+			rawFile.send(null);
+		}
+		mainFunc(0);
+		</script>
+	</body>
+
+</html>

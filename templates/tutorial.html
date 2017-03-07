@@ -1,0 +1,41 @@
+<html lang="en">
+
+	<head>
+		<title>...</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="static/bootstrap.min.css">
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="static/style.css">
+		<script>
+		var chars = 'abcdefghijklmnopqrstuvwxyz';
+		$(document).ready(function() {
+			var asl_interval = setInterval(function() {
+				$.get('/current', '', function(data, textStatus, jqXHR) {
+					var goal = $('#prompt').attr('class');
+					if (data['symbol'] == goal) {
+						var ndx = Math.floor(Math.random() * chars.length);
+						if (chars[ndx] == goal)
+							ndx = (ndx + 1) % chars.length;
+						var nextChar = chars[ndx];
+						var newText = 'Great job! Now try "' + nextChar + '"';
+						$('#prompt').attr('class', nextChar);
+						$('#realimage').attr('src', 'asl/' + nextChar + '.gif');
+						$('#prompt').text(newText);
+					}
+				});
+			}, 200);
+		});
+		</script>
+	</head>
+
+	<body>
+		<a id="back_to_splash_link" class='hidden' href="/splash"><button class="btn btn-primary" id="back_to_splash">Home</button></a>
+		<div id="container">
+			<div class="lato" id="content" style="font-size:2px">
+				<div id="prompt" class="b">Make a b</div>
+			</div>
+		</div>
+	</body>
+
+</html>
